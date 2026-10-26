@@ -9,17 +9,23 @@ export * from './engine/concurrency.js'
 export * from './engine/script.js'
 export * from './engine/journal.js'
 export * from './engine/budget.js'
-export * from './engine/structuredOutput.js'
+export { validateAgainstSchema } from './engine/structuredOutput.js'
 export * from './engine/namedWorkflows.js'
 export * from './engine/errors.js'
 export * from './engine/context.js'
 export * from './engine/hooks.js'
 export * from './engine/runWorkflow.js'
 export * from './progress/events.js'
-export {
+import {
   createWorkflowTool,
   type WorkflowToolDescriptor,
 } from './tool/WorkflowTool.js'
-export { workflowInputSchema, type WorkflowInput } from './tool/schema.js'
-export { persistInlineScript } from './tool/persistInline.js'
-export { WORKFLOW_TOOL_NAME } from './tool/constants.js'
+import { workflowInputSchema, type WorkflowInput } from './tool/schema.js'
+import { persistInlineScript } from './tool/persistInline.js'
+export {
+  createWorkflowTool,
+  type WorkflowToolDescriptor,
+  workflowInputSchema,
+  type WorkflowInput,
+  persistInlineScript,
+}

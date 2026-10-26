@@ -179,6 +179,7 @@ import privacySettings from './commands/privacy-settings/index.js'
 import hooks from './commands/hooks/index.js'
 import files from './commands/files/index.js'
 import branch from './commands/branch/index.js'
+import artifacts from './commands/artifacts/index.js'
 import agents from './commands/agents/index.js'
 import plugin from './commands/plugin/index.js'
 import reloadPlugins from './commands/reload-plugins/index.js'
@@ -222,7 +223,11 @@ import {
 } from './utils/plugins/loadPluginCommands.js'
 import memoize from 'lodash-es/memoize.js'
 import { isUsing3PServices, isClaudeAISubscriber } from './utils/auth.js'
-import { isFirstPartyAnthropicBaseUrl } from './utils/model/providers.js'
+import {
+  getAPIProvider,
+  isFirstPartyAnthropicBaseUrl,
+  isThirdPartyAPIProvider,
+} from './utils/model/providers.js'
 import env from './commands/env/index.js'
 import exit from './commands/exit/index.js'
 import exportCommand from './commands/export/index.js'
@@ -305,6 +310,7 @@ const COMMANDS = memoize((): Command[] => [
   localMemoryCommand,
   autonomy,
   provider,
+  artifacts,
   agents,
   branch,
   btw,
@@ -508,11 +514,11 @@ export function meetsAvailabilityRequirement(cmd: Command): boolean {
         break
       case 'console':
         // Console API key user = direct 1P API customer (not 3P, not claude.ai).
-        // Excludes 3P (Bedrock/Vertex/Foundry) who don't set ANTHROPIC_BASE_URL
-        // and gateway users who proxy through a custom base URL.
+        // Excludes non-first-party providers selected through settings or env,
+        // plus gateway users who proxy through a custom base URL.
         if (
           !isClaudeAISubscriber() &&
-          !isUsing3PServices() &&
+          !isThirdPartyAPIProvider(getAPIProvider()) &&
           isFirstPartyAnthropicBaseUrl()
         )
           return true
